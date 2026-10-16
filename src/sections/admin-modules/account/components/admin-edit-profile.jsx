@@ -19,7 +19,7 @@ import { Form, Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
 
 import { useUpdateProfileMutation } from 'src/store/Reducer/auth';
-import { useCallback, useState } from 'react';
+import { useRef, useCallback, useState } from 'react';
 
 const EditProfileSchema = zod.object({
   displayName: zod.string().min(1, { message: 'Name is required!' }),
@@ -27,6 +27,7 @@ const EditProfileSchema = zod.object({
 
 export function AdminEditProfile({ info, onCancel }) {
   const [updateProfile] = useUpdateProfileMutation();
+  const fileInputRef = useRef(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(info?.avatarUrl || '');
 
@@ -82,7 +83,7 @@ export function AdminEditProfile({ info, onCancel }) {
           <Card sx={{ p: 4, textAlign: 'center', borderRadius: 3 }}>
             <Box sx={{ position: 'relative', display: 'inline-block', mb: 2 }}>
               <Avatar
-                src={info?.avatarUrl}
+                src={avatarPreview}
                 sx={{
                   width: 110,
                   height: 110,
@@ -94,8 +95,11 @@ export function AdminEditProfile({ info, onCancel }) {
                 {info?.name?.charAt(0)?.toUpperCase()}
               </Avatar>
 
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/jpg,image/png,image/gif" hidden onChange={handleAvatarChange} />
+
               <IconButton
                 size="small"
+                onClick={() => fileInputRef.current?.click()}
                 sx={{
                   position: 'absolute',
                   bottom: 0,
