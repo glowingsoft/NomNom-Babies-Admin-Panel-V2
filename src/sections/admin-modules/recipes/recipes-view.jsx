@@ -85,10 +85,6 @@ export function RecipesView() {
 
   const { data: listResponse, isFetching } = useGetRecipesQuery(queryParams);
 
-  const { data: allCountResponse } = useGetRecipesQuery({ page: 1, limit: 1 });
-  const { data: publishedCountResponse } = useGetRecipesQuery({ page: 1, limit: 1, status: 'published' });
-  const { data: draftCountResponse } = useGetRecipesQuery({ page: 1, limit: 1, status: 'draft' });
-  const { data: archivedCountResponse } = useGetRecipesQuery({ page: 1, limit: 1, status: 'archived' });
 
   const { data: detailResponse, isFetching: isLoadingDetail } = useGetRecipeByIdQuery(editingId, {
     skip: !editingId,
@@ -105,14 +101,9 @@ export function RecipesView() {
   const rows = listResponse?.data ?? [];
   const totalRows = listResponse?.meta?.totalRecords ?? rows.length;
 
-  const tabCounts = {
-    all: allCountResponse?.meta?.totalRecords ?? 0,
-    published: publishedCountResponse?.meta?.totalRecords ?? 0,
-    draft: draftCountResponse?.meta?.totalRecords ?? 0,
-    archived: archivedCountResponse?.meta?.totalRecords ?? 0,
-  };
 
-  const getTabCount = useCallback((tab) => tabCounts[tab] ?? 0, [tabCounts]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => listResponse?.meta?.counts?.[tab], [listResponse?.meta?.counts]);
 
   const editingRecord = editingId ? detailResponse?.data : null;
   const viewingRecord = viewingId ? viewResponse?.data : null;

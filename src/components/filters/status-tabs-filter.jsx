@@ -6,11 +6,12 @@ import { varAlpha } from 'src/theme/styles';
 import { Label } from 'src/components/label';
 
 
-function StatusTabsFilter({ value, options, onChange, getCount, sx }) {
+function StatusTabsFilter({ value, options, onChange, getCount, sx, ...other }) {
     return (
         <Tabs
             value={value}
             onChange={onChange}
+            {...other}
             sx={{
                 px: { xs: 1, sm: 3 },
                 py: { xs: 0.25, sm: 0.5 },
@@ -49,12 +50,14 @@ function StatusTabsFilter({ value, options, onChange, getCount, sx }) {
                         },
                     }}
                     icon={
-                        <Label
-                            variant={((tab.value === 'all' || tab.value === value) && 'filled') || 'soft'}
-                            color={tab.color || 'default'}
-                        >
-                            {getCount(tab.value)}
-                        </Label>
+                        getCount(tab.value) == null ? undefined : (
+                            <Label
+                                variant={((tab.value === 'all' || tab.value === value) && 'filled') || 'soft'}
+                                color={tab.color || 'default'}
+                            >
+                                {getCount(tab.value)}
+                            </Label>
+                        )
                     }
                 />
             ))}

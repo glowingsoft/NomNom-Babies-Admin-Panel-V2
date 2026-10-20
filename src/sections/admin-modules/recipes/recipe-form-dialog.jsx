@@ -63,28 +63,38 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadFiles] = useUploadFilesMutation();
 
-  const { data: countriesResponse } = useGetCountriesQuery({ page: 1, limit: 200, enabled: true });
+  const { data: countriesResponse } = useGetCountriesQuery({ page: 1, limit: 200, enabled: true }, { skip: !open });
+  // Dropdown options are only loaded once the dialog is opened.
   const countryOptions = countriesResponse?.data ?? [];
 
-  const { data: babyStageResponse } = useGetBabyStagesQuery({
-    page: 1,
-    limit: 100,
-    status: 'active',
-  });
+  const { data: babyStageResponse } = useGetBabyStagesQuery(
+    {
+      page: 1,
+      limit: 100,
+      status: 'active',
+    },
+    { skip: !open }
+  );
   const babyStageOptions = babyStageResponse?.data ?? [];
 
-  const { data: nutritionTagsResponse } = useGetNutritionsQuery({
-    page: 1,
-    limit: 100,
-    status: 'active',
-  });
+  const { data: nutritionTagsResponse } = useGetNutritionsQuery(
+    {
+      page: 1,
+      limit: 100,
+      status: 'active',
+    },
+    { skip: !open }
+  );
   const nutritionOptions = nutritionTagsResponse?.data ?? [];
 
-  const { data: mealsResponse } = useGetMealsQuery({
-    page: 1,
-    limit: 100,
-    status: 'active',
-  });
+  const { data: mealsResponse } = useGetMealsQuery(
+    {
+      page: 1,
+      limit: 100,
+      status: 'active',
+    },
+    { skip: !open }
+  );
   const mealTypeOptions = mealsResponse?.data ?? [];
 
   useEffect(() => {

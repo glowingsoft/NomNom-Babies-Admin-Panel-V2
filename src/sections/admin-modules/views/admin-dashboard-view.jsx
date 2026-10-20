@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -19,6 +20,7 @@ import { paths } from 'src/routes/paths';
 import { fNumber } from 'src/utils/format-number';
 import { fDateTime } from 'src/utils/format-time';
 
+import { toast } from 'src/components/snackbar';
 import { useGetDashboardQuery } from 'src/store/Reducer/dashboard';
 
 export function AdminDashboardView() {
@@ -28,8 +30,13 @@ export function AdminDashboardView() {
   const { data: dashboardRes, isFetching: isLoading } = useGetDashboardQuery({ topN: 5, limit: 5 });
   const dashboard = dashboardRes?.data || {};
 
+  const failedSections = Object.keys(dashboard.errors || {}).join(', ');
+  useEffect(() => {
+    if (failedSections) toast.warning(`Some dashboard sections failed to load: ${failedSections}`);
+  }, [failedSections]);
+
   // Sections that failed on the server come back null (see dashboard.errors); fall back to empty values.
-  const widgets = dashboard.widgets?.widgets ?? dashboard.widgets ?? {};
+  const widgets = dashboard.widgets || {};
   const userStatus = dashboard.userStatus || { active: 0, inactive: 0, suspended: 0, total: 0 };
   const health = dashboard.platformHealth || { countriesRate: 0, ageGroupsRate: 0, recipesRate: 0 };
   const growth = dashboard.growthTrend || { months: [], series: [] };

@@ -42,6 +42,19 @@ export const supportApi = createApi({
       invalidatesTags: ['Support'],
     }),
 
+    // Reply-To-Support (emails the user and marks the request as responded)
+    replySupport: builder.mutation({
+      query: ({ id, message }) => ({
+        url: API_ROUTES.SUPPORT.REPLY(id),
+        method: 'POST',
+        body: { message },
+        headers: {
+          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
+        },
+      }),
+      invalidatesTags: ['Support'],
+    }),
+
     // Delete-Support
     deleteSupport: builder.mutation({
       query: (id) => ({
@@ -56,4 +69,4 @@ export const supportApi = createApi({
   }),
 });
 
-export const { useGetSupportRequestsQuery, useUpdateSupportStatusMutation, useDeleteSupportMutation } = supportApi;
+export const { useGetSupportRequestsQuery, useUpdateSupportStatusMutation, useReplySupportMutation, useDeleteSupportMutation } = supportApi;

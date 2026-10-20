@@ -90,6 +90,7 @@ export const API_ROUTES = {
   SUPPORT: {
     GET_LIST: 'admin/support',
     UPDATE_STATUS: (id) => `admin/support/status/${id}`,
+    REPLY: (id) => `admin/support/${id}/reply`,
     DELETE: (id) => `admin/support/${id}`,
   },
 

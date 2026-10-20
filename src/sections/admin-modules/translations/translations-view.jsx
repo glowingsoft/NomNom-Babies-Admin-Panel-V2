@@ -56,7 +56,7 @@ export function TranslationsView() {
   const [deleteLanguage, { isLoading: isDeleting }] = useDeleteLanguageMutation();
   const rows = data?.data || [];
 
-  const { search, setSearch, listFilter, filtered, handleTabChange, getTabCount } = useAdminListFilter(rows, {
+  const { search, setSearch, listFilter, filtered, handleTabChange } = useAdminListFilter(rows, {
     applyFilter: (row, tab) => {
       if (tab === 'all') return true;
       if (tab === 'active') return row.active;
@@ -65,6 +65,9 @@ export function TranslationsView() {
     },
     getSearchableText: (row) => `${row.title} ${row.transliteration} ${row.code || ''}`,
   });
+
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = (tab) => data?.meta?.counts?.[tab];
 
   const dataInPage = filtered.slice(table.page * table.rowsPerPage, table.page * table.rowsPerPage + table.rowsPerPage);
 

@@ -113,15 +113,12 @@ export function UsersView() {
     status: listFilter !== 'all' ? listFilter : undefined,
   });
 
-  // Separate, unfiltered pull used only for accurate tab counts / insight card / culture options.
-  // Adjust or remove this if your backend can return counts directly.
-  const { data: allUsersResponse } = useGetAllUsersQuery({ page: 1, limit: 1000 });
-
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserStatusMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const rows = useMemo(() => usersResponse?.data || [], [usersResponse?.data]);
-  const allUsers = useMemo(() => allUsersResponse?.data || [], [allUsersResponse?.data]);
+  // Insight card and culture options are based on the users loaded for the current page (no extra request).
+  const allUsers = rows;
 
   const totalRows = usersResponse?.meta?.totalRecords || 0;
 
@@ -154,7 +151,8 @@ export function UsersView() {
     [table]
   );
 
-  const getTabCount = useCallback((tab) => (tab === 'all' ? allUsers.length : allUsers.filter((row) => row.status === tab).length), [allUsers]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => usersResponse?.meta?.counts?.[tab], [usersResponse?.meta?.counts]);
 
   const openStatusMenu = (event, row) => {
     setMenuAnchor(event.currentTarget);
@@ -233,7 +231,7 @@ export function UsersView() {
               Food culture insight
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              <strong>{insightCount}</strong> of {allUsers.length} users selected <strong>{insightLabel}</strong> as their food cultures.
+              <strong>{insightCount}</strong> of {allUsers.length} users on this page selected <strong>{insightLabel}</strong> as their food cultures.
             </Typography>
           </Box>
 

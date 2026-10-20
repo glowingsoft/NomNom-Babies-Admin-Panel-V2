@@ -33,6 +33,7 @@ import { useDeleteSupportMutation, useGetSupportRequestsQuery } from 'src/store/
 export const STATUS_OPTIONS = [
   { value: 'all', label: 'All', color: 'default' },
   { value: 'pending', label: 'Pending', color: 'warning' },
+  { value: 'open', label: 'Open', color: 'secondary' },
   { value: 'responded', label: 'Responded', color: 'info' },
   { value: 'resolved', label: 'Resolved', color: 'success' },
   { value: 'closed', label: 'Closed', color: 'default' },
@@ -41,7 +42,7 @@ export const STATUS_OPTIONS = [
 const TABLE_HEAD = [
   { id: 'sr', label: 'Sr#', width: 80 },
   { id: 'name', label: 'Name' },
-  { id: 'phone', label: 'Phone' },
+  // { id: 'phone', label: 'Phone' },
   { id: 'subject', label: 'Subject' },
   { id: 'message', label: 'Message' },
   { id: 'receivedAt', label: 'Received At', minWidth: 120 },
@@ -77,12 +78,7 @@ const TableContent = memo(({ isLoading, isFetching, sortedData, currentPage, ite
       !isFetching &&
       // sortedData.map((row, index) => (
       sortedData.map((row, index) => (
-        <SupportTableRow
-          key={row._id}
-          row={row}
-          serialNumber={currentPage * itemsPerPage + index + 1}
-          onDeleteRow={() => onDeleteRow(row._id, row.name)}
-        />
+        <SupportTableRow key={row._id} row={row} serialNumber={currentPage * itemsPerPage + index + 1} onDeleteRow={() => onDeleteRow(row._id, row.name)} />
       ))}
     {(isLoading || isFetching) && <TableEmptyRows height={table.dense ? 56 : 76} emptyRows={itemsPerPage} />}
     <TableNoData notFound={!isLoading && !isFetching && sortedData.length === 0} />

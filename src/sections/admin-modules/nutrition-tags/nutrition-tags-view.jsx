@@ -76,9 +76,6 @@ export function NutritionTagsView() {
 
   const { data: listResponse, isFetching } = useGetNutritionsQuery(queryParams);
 
-  const { data: allCountResponse } = useGetNutritionsQuery({ page: 1, limit: 1 });
-  const { data: activeCountResponse } = useGetNutritionsQuery({ page: 1, limit: 1, status: 'active' });
-  const { data: disabledCountResponse } = useGetNutritionsQuery({ page: 1, limit: 1, status: 'disabled' });
 
   const [createNutrition, { isLoading: isCreating }] = useCreateNutritionMutation();
   const [updateNutrition, { isLoading: isUpdating }] = useUpdateNutritionMutation();
@@ -87,13 +84,9 @@ export function NutritionTagsView() {
   const rows = listResponse?.data ?? [];
   const totalRows = listResponse?.meta?.totalRecords ?? rows.length;
 
-  const tabCounts = {
-    all: allCountResponse?.meta?.totalRecords ?? 0,
-    active: activeCountResponse?.meta?.totalRecords ?? 0,
-    disabled: disabledCountResponse?.meta?.totalRecords ?? 0,
-  };
 
-  const getTabCount = useCallback((tab) => tabCounts[tab] ?? 0, [tabCounts]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => listResponse?.meta?.counts?.[tab], [listResponse?.meta?.counts]);
 
   const openAdd = useCallback(() => {
     setEditing(null);
