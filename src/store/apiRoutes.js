@@ -20,7 +20,7 @@ export const API_ROUTES = {
     TOP_RECIPES: 'admin/admin-panel/dashboard/top-recipes',
     TOP_COUNTRIES: 'admin/admin-panel/dashboard/top-countries',
     APP_DOWNLOADS: 'admin/admin-panel/dashboard/app-downloads',
-    DOWNLOADED_PDFS: "download-pdf"
+    DOWNLOADED_PDFS: 'download-pdf',
   },
 
   USERS: {
@@ -49,6 +49,10 @@ export const API_ROUTES = {
     CREATE_BABYSTAGE: 'baby-stages',
     UPDATE_BABYSTAGE: (id) => `baby-stages/${id}`,
     DELETE_BABYSTAGE: (id) => `baby-stages/${id}`,
+  },
+
+  UPLOAD: {
+    S3: 'upload/s3',
   },
 
   MEALS: {

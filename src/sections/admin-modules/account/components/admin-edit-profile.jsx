@@ -19,6 +19,7 @@ import { Form, Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
 
 import { useUpdateProfileMutation } from 'src/store/Reducer/auth';
+import { useUploadFilesMutation } from 'src/store/Reducer/upload';
 import { useRef, useCallback, useState } from 'react';
 
 const EditProfileSchema = zod.object({
@@ -27,6 +28,7 @@ const EditProfileSchema = zod.object({
 
 export function AdminEditProfile({ info, onCancel }) {
   const [updateProfile] = useUpdateProfileMutation();
+  const [uploadFiles] = useUploadFilesMutation();
   const fileInputRef = useRef(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(info?.avatarUrl || '');
@@ -59,14 +61,15 @@ export function AdminEditProfile({ info, onCancel }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const formData = new FormData();
-      formData.append('name', data.displayName);
+      const payload = { name: data.displayName };
 
       if (avatarFile) {
-        formData.append('profileIcon', avatarFile);
+        const res = await uploadFiles(avatarFile).unwrap();
+        const uploaded = Array.isArray(res?.data) ? res.data[0] : res?.data;
+        payload.profileIcon = uploaded.fileUrl;
       }
 
-      await updateProfile(formData).unwrap();
+      await updateProfile(payload).unwrap();
 
       toast.success('Profile updated successfully!');
       onCancel?.();

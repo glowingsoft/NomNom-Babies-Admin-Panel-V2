@@ -23,6 +23,8 @@ import { UploadAvatar } from 'src/components/upload';
 import { useGetBabyStagesQuery } from 'src/store/Reducer/babyStage';
 import { useGetNutritionsQuery } from 'src/store/Reducer/nutrition';
 import { useGetMealsQuery } from 'src/store/Reducer/meals';
+import { useUploadFilesMutation } from 'src/store/Reducer/upload';
+import { toast } from 'src/components/snackbar';
 import { LinearProgress } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -54,22 +56,12 @@ const defaultForm = {
   status: 'published',
 };
 
-// TODO: replace this with your existing shared image-upload mutation/helper
-// (whatever other admin modules — e.g. countries, baby profiles — already
-// use to persist an uploaded file and get back a hosted URL).
-async function uploadRecipeImage(file) {
-  // Placeholder: returns a local object URL so the UI keeps working.
-  // Swap this out for a real upload call, e.g.:
-  // const { data } = await uploadFile(file).unwrap();
-  // return data.url;
-  return URL.createObjectURL(file);
-}
-
 // ----------------------------------------------------------------------
 
 export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loadingInitialData, title, submitting }) {
   const [form, setForm] = useState(defaultForm);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadFiles] = useUploadFilesMutation();
 
   const { data: countriesResponse } = useGetCountriesQuery({ page: 1, limit: 200, enabled: true });
   const countryOptions = countriesResponse?.data ?? [];
@@ -123,21 +115,28 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
     }
   }, [open, initialData]);
 
-  const handleDropImage = useCallback(async (acceptedFiles) => {
-    const file = acceptedFiles?.[0];
-    if (!file) return;
+  const handleDropImage = useCallback(
+    async (acceptedFiles) => {
+      const file = acceptedFiles?.[0];
+      if (!file) return;
 
-    const preview = URL.createObjectURL(file);
-    setForm((f) => ({ ...f, image: preview }));
+      const previousImage = form.image;
+      setForm((f) => ({ ...f, image: URL.createObjectURL(file) }));
 
-    setUploadingImage(true);
-    try {
-      const uploadedUrl = await uploadRecipeImage(file);
-      setForm((f) => ({ ...f, image: uploadedUrl }));
-    } finally {
-      setUploadingImage(false);
-    }
-  }, []);
+      setUploadingImage(true);
+      try {
+        const res = await uploadFiles(file).unwrap();
+        const uploaded = Array.isArray(res?.data) ? res.data[0] : res?.data;
+        setForm((f) => ({ ...f, image: uploaded.fileUrl }));
+      } catch (err) {
+        setForm((f) => ({ ...f, image: previousImage }));
+        toast.error(err?.data?.message || 'Image upload failed');
+      } finally {
+        setUploadingImage(false);
+      }
+    },
+    [form.image, uploadFiles]
+  );
 
   const updateIngredient = (index, field, value) => {
     setForm((f) => ({

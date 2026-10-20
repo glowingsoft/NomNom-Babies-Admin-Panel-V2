@@ -11,6 +11,7 @@ import { useRouter } from 'src/routes/hooks';
 import { varAlpha } from 'src/theme/styles';
 import { Iconify } from 'src/components/iconify';
 import { useMockedUser } from 'src/auth/hooks';
+import { useGetMyProfileQuery } from 'src/store/Reducer/auth';
 import { AccountButton } from './account-button';
 import { SignOutButton } from './sign-out-button';
 
@@ -40,8 +41,13 @@ export function AccountDrawer({ data = [], sx, ...other }) {
     [handleCloseDrawer, router]
   );
 
-  const displayName = user?.displayName || user?.basicInfo?.name;
-  const email = user?.basicInfo?.email || user?.email;
+  // The persisted login user goes stale after a profile edit, so prefer the live profile.
+  const { data: profileRes } = useGetMyProfileQuery();
+  const profile = profileRes?.data?.basicInfo;
+
+  const displayName = profile?.name || user?.displayName || user?.basicInfo?.name;
+  const email = profile?.email || user?.basicInfo?.email || user?.email;
+  const photoURL = profile?.profileIcon || user?.photoURL || user?.basicInfo?.profileIcon;
   const avatarLetter = displayName?.charAt(0)?.toUpperCase() || '?';
 
   return (
@@ -49,7 +55,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
       <AccountButton
         open={open}
         onClick={handleOpenDrawer}
-        photoURL={user?.photoURL || user?.basicInfo?.profileIcon}
+        photoURL={photoURL}
         displayName={displayName}
         sx={sx}
         {...other}
@@ -78,7 +84,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         <Stack sx={{ pt: 5, pb: 2, px: 2.5 }}>
           <Stack alignItems="center" spacing={1}>
             <Avatar
-              src={user?.photoURL || user?.basicInfo?.profileIcon}
+              src={photoURL}
               alt={displayName}
               sx={{
                 width: 118,

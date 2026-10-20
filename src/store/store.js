@@ -18,6 +18,7 @@ import { usersApi } from './Reducer/users';
 import { activitiesApi } from './Reducer/activities';
 import { dashboardApi } from './Reducer/dashboard';
 import { supportApi } from './Reducer/support';
+import { uploadApi } from './Reducer/upload';
 
 const persistConfig = {
   key: 'root',
@@ -49,6 +50,7 @@ export const store = configureStore({
     [activitiesApi.reducerPath]: activitiesApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [supportApi.reducerPath]: supportApi.reducer,
+    [uploadApi.reducerPath]: uploadApi.reducer,
     user: persistedUserReducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -72,6 +74,7 @@ export const store = configureStore({
       activitiesApi.middleware,
       dashboardApi.middleware,
       supportApi.middleware,
+      uploadApi.middleware
     ),
 });
 

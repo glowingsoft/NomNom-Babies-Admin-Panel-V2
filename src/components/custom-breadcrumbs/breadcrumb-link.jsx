@@ -39,7 +39,7 @@ export function BreadcrumbsLink({ link, activeLast, disabled }) {
 
   if (link.href) {
     return (
-      <Link component={RouterLink} href={link.href} sx={styles}>
+      <Link component={RouterLink} href={link.href} underline="none" sx={styles}>
         {renderContent}
       </Link>
     );
