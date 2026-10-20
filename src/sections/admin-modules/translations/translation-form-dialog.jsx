@@ -41,7 +41,6 @@ export function TranslationFormDialog({ open, onClose, onSubmit, initialData, ti
       code: form.code.trim().toLowerCase(),
       active: form.active,
     });
-    onClose();
   };
 
   return (

@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -35,16 +36,18 @@ export function AdminDashboardView() {
   const router = useRouter();
   const theme = useTheme();
 
-  const { data: widgetsRes } = useGetDashboardWidgetsQuery();
-  const { data: userStatusRes } = useGetUserStatusStatsQuery();
-  const { data: healthRes } = useGetPlatformHealthQuery();
-  const { data: growthRes } = useGetGrowthTrendQuery();
-  const { data: countryGrowthRes } = useGetCountryGrowthQuery(5);
-  const { data: activitiesRes } = useGetDashboardRecentActivitiesQuery(5);
-  const { data: topDownloadsRes } = useGetTopDownloadedRecipesQuery();
-  const { data: topRecipesRes } = useGetTopRecipesQuery();
-  const { data: topCountriesRes } = useGetTopCountriesQuery();
-  const { data: appDownloadsRes } = useGetAppDownloadStatsQuery();
+  const { data: widgetsRes, isFetching: widgetsResFetching } = useGetDashboardWidgetsQuery();
+  const { data: userStatusRes, isFetching: userStatusResFetching } = useGetUserStatusStatsQuery();
+  const { data: healthRes, isFetching: healthResFetching } = useGetPlatformHealthQuery();
+  const { data: growthRes, isFetching: growthResFetching } = useGetGrowthTrendQuery();
+  const { data: countryGrowthRes, isFetching: countryGrowthResFetching } = useGetCountryGrowthQuery(5);
+  const { data: activitiesRes, isFetching: activitiesResFetching } = useGetDashboardRecentActivitiesQuery(5);
+  const { data: topDownloadsRes, isFetching: topDownloadsResFetching } = useGetTopDownloadedRecipesQuery();
+  const { data: topRecipesRes, isFetching: topRecipesResFetching } = useGetTopRecipesQuery();
+  const { data: topCountriesRes, isFetching: topCountriesResFetching } = useGetTopCountriesQuery();
+  const { data: appDownloadsRes, isFetching: appDownloadsResFetching } = useGetAppDownloadStatsQuery();
+
+  const isLoading = widgetsResFetching || userStatusResFetching || healthResFetching || growthResFetching || countryGrowthResFetching || activitiesResFetching || topDownloadsResFetching || topRecipesResFetching || topCountriesResFetching || appDownloadsResFetching;
 
   const widgets = widgetsRes?.data?.widgets || {};
   const userStatus = userStatusRes?.data || { active: 0, inactive: 0, suspended: 0, total: 0 };
@@ -228,6 +231,8 @@ export function AdminDashboardView() {
 
   return (
     <DashboardContent maxWidth="xl">
+      {isLoading && <LinearProgress sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: theme.zIndex.appBar + 1 }} />}
+
       <Grid container spacing={3} alignItems="flex-start">
         {/* ── Welcome + widgets ──────────────────────────────────────────── */}
         <Grid xs={12} md={8}>
@@ -431,7 +436,7 @@ export function AdminDashboardView() {
               subheader="Most downloaded recipe PDFs"
               icon="solar:download-bold"
               tableData={downloadRows}
-              headLabel={[{ id: 'name', label: 'Recipe' }, { id: 'category', label: 'Category' }, { id: 'downloads', label: 'Downloads', align: 'right' }, { id: '' }]}
+              headLabel={[{ id: 'name', label: 'Recipe' }, { id: 'category', label: 'Meal Type' }, { id: 'downloads', label: 'Downloads', align: 'right' }, { id: '' }]}
               viewAllPath={paths.adminDashboard.modules.recipes}
             />
           </Box>
