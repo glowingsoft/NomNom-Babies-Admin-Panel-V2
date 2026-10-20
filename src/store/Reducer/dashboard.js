@@ -9,6 +9,20 @@ export const dashboardApi = createApi({
   baseQuery: createCustomFetchBaseQuery(),
   tagTypes: ['Dashboard'],
   endpoints: (builder) => ({
+    // All dashboard sections in one request. A section that failed on the server is null
+    // and listed in data.errors; the rest are still returned.
+    getDashboard: builder.query({
+      query: (params) => ({
+        url: API_ROUTES.DASHBOARD.ALL,
+        method: 'GET',
+        params,
+        headers: {
+          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
+        },
+      }),
+      providesTags: ['Dashboard'],
+    }),
+
     // Dashboard Widgets
     getDashboardWidgets: builder.query({
       query: () => ({
@@ -145,6 +159,7 @@ export const dashboardApi = createApi({
 });
 
 export const {
+  useGetDashboardQuery,
   useGetDashboardWidgetsQuery,
   useGetUserStatusStatsQuery,
   useGetPlatformHealthQuery,

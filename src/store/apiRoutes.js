@@ -10,6 +10,7 @@ export const API_ROUTES = {
   },
 
   DASHBOARD: {
+    ALL: 'admin/admin-panel/dashboard',
     WIDGETS: 'admin/admin-panel/dashboard/widgets',
     USER_STATUS: 'admin/admin-panel/dashboard/user-status',
     PLATFORM_HEALTH: 'admin/admin-panel/dashboard/platform-health',
