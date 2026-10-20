@@ -79,9 +79,6 @@ export function MealsView() {
 
   const { data: listResponse, isFetching } = useGetMealsQuery(queryParams);
 
-  const { data: allCountResponse } = useGetMealsQuery({ page: 1, limit: 1 });
-  const { data: activeCountResponse } = useGetMealsQuery({ page: 1, limit: 1, status: 'active' });
-  const { data: disabledCountResponse } = useGetMealsQuery({ page: 1, limit: 1, status: 'disabled' });
 
   const [createMeal, { isLoading: isCreating }] = useCreateMealMutation();
   const [updateMeal, { isLoading: isUpdating }] = useUpdateMealMutation();
@@ -90,13 +87,9 @@ export function MealsView() {
   const rows = listResponse?.data ?? [];
   const totalRows = listResponse?.meta?.totalRecords ?? rows.length;
 
-  const tabCounts = {
-    all: allCountResponse?.meta?.totalRecords ?? 0,
-    active: activeCountResponse?.meta?.totalRecords ?? 0,
-    disabled: disabledCountResponse?.meta?.totalRecords ?? 0,
-  };
 
-  const getTabCount = useCallback((tab) => tabCounts[tab] ?? 0, [tabCounts]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => listResponse?.meta?.counts?.[tab], [listResponse?.meta?.counts]);
 
   const openAdd = useCallback(() => {
     setEditing(null);
@@ -154,8 +147,8 @@ export function MealsView() {
 
   const requestDelete = useCallback(
     (row) => {
-      if (row.recipesCount > 0) {
-        toast.error(`"${row.name}" is used by ${row.recipesCount} recipe${row.recipesCount === 1 ? '' : 's'} and can't be deleted until they're reassigned.`);
+      if (row.recipes > 0) {
+        toast.error(`"${row.name}" is used by ${row.recipes} recipe${row.recipes === 1 ? '' : 's'} and can't be deleted until they're reassigned.`);
         return;
       }
       setDeleting(row);
@@ -233,7 +226,7 @@ export function MealsView() {
               <TableCell align="center">
                 <Switch size="small" checked={Boolean(row.isActive)} disabled={togglingId === row._id || isUpdating} onChange={() => handleToggleActive(row)} />
               </TableCell>
-              <TableCell>{row.recipesCount ?? 0}</TableCell>
+              <TableCell>{row.recipes ?? 0}</TableCell>
               <AdminTableActions onEdit={() => openEdit(row)} onDelete={() => requestDelete(row)} />
             </TableRow>
           ))

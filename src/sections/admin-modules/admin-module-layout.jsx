@@ -60,6 +60,7 @@ export function AdminModuleLayout({
           }
           sx={{
             mb: 0,
+            '& a, & a:hover': { textDecoration: 'none' },
             '& > .MuiStack-root:first-of-type': {
               flexWrap: { xs: 'wrap', sm: 'nowrap' },
               alignItems: { xs: 'flex-start', sm: 'center' },

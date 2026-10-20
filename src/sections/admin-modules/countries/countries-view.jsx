@@ -82,10 +82,6 @@ export function CountriesView() {
 
   const { data: listResponse, isFetching } = useGetCountriesQuery(queryParams);
 
-  const { data: allCountResponse } = useGetCountriesQuery({ page: 1, limit: 1 });
-  const { data: enabledCountResponse } = useGetCountriesQuery({ page: 1, limit: 1, status: 'active' });
-  const { data: reviewCountResponse } = useGetCountriesQuery({ page: 1, limit: 1, status: 'review' });
-  const { data: disabledCountResponse } = useGetCountriesQuery({ page: 1, limit: 1, status: 'disabled' });
 
   const [createCountry, { isLoading: isCreating }] = useCreateCountryMutation();
   const [updateCountry, { isLoading: isUpdating }] = useUpdateCountryMutation();
@@ -94,14 +90,9 @@ export function CountriesView() {
   const rows = listResponse?.data ?? [];
   const totalRows = listResponse?.meta?.totalRecords ?? rows.length;
 
-  const tabCounts = {
-    all: allCountResponse?.meta?.totalRecords ?? 0,
-    enabled: enabledCountResponse?.meta?.totalRecords ?? 0,
-    review: reviewCountResponse?.meta?.totalRecords ?? 0,
-    disabled: disabledCountResponse?.meta?.totalRecords ?? 0,
-  };
 
-  const getTabCount = useCallback((tab) => tabCounts[tab] ?? 0, [tabCounts]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => listResponse?.meta?.counts?.[tab === 'enabled' ? 'active' : tab], [listResponse?.meta?.counts]);
 
   const openAdd = useCallback(() => {
     setEditing(null);

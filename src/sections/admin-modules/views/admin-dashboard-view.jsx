@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -18,44 +20,32 @@ import { paths } from 'src/routes/paths';
 import { fNumber } from 'src/utils/format-number';
 import { fDateTime } from 'src/utils/format-time';
 
-import {
-  useGetDashboardWidgetsQuery,
-  useGetUserStatusStatsQuery,
-  useGetPlatformHealthQuery,
-  useGetGrowthTrendQuery,
-  useGetCountryGrowthQuery,
-  useGetDashboardRecentActivitiesQuery,
-  useGetTopDownloadedRecipesQuery,
-  useGetTopRecipesQuery,
-  useGetTopCountriesQuery,
-  useGetAppDownloadStatsQuery,
-} from 'src/store/Reducer/dashboard';
+import { toast } from 'src/components/snackbar';
+import { useGetDashboardQuery } from 'src/store/Reducer/dashboard';
 
 export function AdminDashboardView() {
   const router = useRouter();
   const theme = useTheme();
 
-  const { data: widgetsRes } = useGetDashboardWidgetsQuery();
-  const { data: userStatusRes } = useGetUserStatusStatsQuery();
-  const { data: healthRes } = useGetPlatformHealthQuery();
-  const { data: growthRes } = useGetGrowthTrendQuery();
-  const { data: countryGrowthRes } = useGetCountryGrowthQuery(5);
-  const { data: activitiesRes } = useGetDashboardRecentActivitiesQuery(5);
-  const { data: topDownloadsRes } = useGetTopDownloadedRecipesQuery();
-  const { data: topRecipesRes } = useGetTopRecipesQuery();
-  const { data: topCountriesRes } = useGetTopCountriesQuery();
-  const { data: appDownloadsRes } = useGetAppDownloadStatsQuery();
+  const { data: dashboardRes, isFetching: isLoading } = useGetDashboardQuery({ topN: 5, limit: 5 });
+  const dashboard = dashboardRes?.data || {};
 
-  const widgets = widgetsRes?.data?.widgets || {};
-  const userStatus = userStatusRes?.data || { active: 0, inactive: 0, suspended: 0, total: 0 };
-  const health = healthRes?.data || { countriesRate: 0, ageGroupsRate: 0, recipesRate: 0 };
-  const growth = growthRes?.data || { months: [], series: [] };
-  const countryGrowth = countryGrowthRes?.data || { months: [], series: [] };
-  const activities = activitiesRes?.data || [];
-  const topDownloads = topDownloadsRes?.data || [];
-  const topRecipes = topRecipesRes?.data || [];
-  const topCountries = topCountriesRes?.data || [];
-  const appDownloads = appDownloadsRes?.data || { android: 0, ios: 0, total: 0 };
+  const failedSections = Object.keys(dashboard.errors || {}).join(', ');
+  useEffect(() => {
+    if (failedSections) toast.warning(`Some dashboard sections failed to load: ${failedSections}`);
+  }, [failedSections]);
+
+  // Sections that failed on the server come back null (see dashboard.errors); fall back to empty values.
+  const widgets = dashboard.widgets || {};
+  const userStatus = dashboard.userStatus || { active: 0, inactive: 0, suspended: 0, total: 0 };
+  const health = dashboard.platformHealth || { countriesRate: 0, ageGroupsRate: 0, recipesRate: 0 };
+  const growth = dashboard.growthTrend || { months: [], series: [] };
+  const countryGrowth = dashboard.countryGrowth || { months: [], series: [] };
+  const activities = dashboard.recentActivities || [];
+  const topDownloads = dashboard.topDownloadedRecipes || [];
+  const topRecipes = dashboard.topRecipes || [];
+  const topCountries = dashboard.topCountries || [];
+  const appDownloads = dashboard.appDownloads || { android: 0, ios: 0, total: 0 };
   const growthSeries = structuredClone(growth.series ?? []);
   const countrySeries = structuredClone(countryGrowth.series ?? []);
 
@@ -228,6 +218,8 @@ export function AdminDashboardView() {
 
   return (
     <DashboardContent maxWidth="xl">
+      {isLoading && <LinearProgress sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: theme.zIndex.appBar + 1 }} />}
+
       <Grid container spacing={3} alignItems="flex-start">
         {/* ── Welcome + widgets ──────────────────────────────────────────── */}
         <Grid xs={12} md={8}>
@@ -431,7 +423,7 @@ export function AdminDashboardView() {
               subheader="Most downloaded recipe PDFs"
               icon="solar:download-bold"
               tableData={downloadRows}
-              headLabel={[{ id: 'name', label: 'Recipe' }, { id: 'category', label: 'Category' }, { id: 'downloads', label: 'Downloads', align: 'right' }, { id: '' }]}
+              headLabel={[{ id: 'name', label: 'Recipe' }, { id: 'category', label: 'Meal Type' }, { id: 'downloads', label: 'Downloads', align: 'right' }, { id: '' }]}
               viewAllPath={paths.adminDashboard.modules.recipes}
             />
           </Box>

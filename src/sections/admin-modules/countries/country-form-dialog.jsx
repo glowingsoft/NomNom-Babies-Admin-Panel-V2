@@ -52,7 +52,6 @@ export function CountryFormDialog({ open, onClose, onSubmit, initialData, title,
       code: form.code.trim().toUpperCase(),
       signatureFoods: form.signatureFoods.map((food) => food.trim()).filter(Boolean),
     });
-    onClose();
   };
 
   return (

@@ -10,6 +10,7 @@ export const API_ROUTES = {
   },
 
   DASHBOARD: {
+    ALL: 'admin/admin-panel/dashboard',
     WIDGETS: 'admin/admin-panel/dashboard/widgets',
     USER_STATUS: 'admin/admin-panel/dashboard/user-status',
     PLATFORM_HEALTH: 'admin/admin-panel/dashboard/platform-health',
@@ -20,7 +21,7 @@ export const API_ROUTES = {
     TOP_RECIPES: 'admin/admin-panel/dashboard/top-recipes',
     TOP_COUNTRIES: 'admin/admin-panel/dashboard/top-countries',
     APP_DOWNLOADS: 'admin/admin-panel/dashboard/app-downloads',
-    DOWNLOADED_PDFS: "download-pdf"
+    DOWNLOADED_PDFS: 'download-pdf',
   },
 
   USERS: {
@@ -49,6 +50,10 @@ export const API_ROUTES = {
     CREATE_BABYSTAGE: 'baby-stages',
     UPDATE_BABYSTAGE: (id) => `baby-stages/${id}`,
     DELETE_BABYSTAGE: (id) => `baby-stages/${id}`,
+  },
+
+  UPLOAD: {
+    S3: 'upload/s3',
   },
 
   MEALS: {
@@ -85,6 +90,7 @@ export const API_ROUTES = {
   SUPPORT: {
     GET_LIST: 'admin/support',
     UPDATE_STATUS: (id) => `admin/support/status/${id}`,
+    REPLY: (id) => `admin/support/${id}/reply`,
     DELETE: (id) => `admin/support/${id}`,
   },
 

@@ -25,13 +25,14 @@ export function AdminTableToolbar({
 
   return (
     <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      alignItems={{ xs: 'stretch', md: 'center' }}
+      direction="row"
+      alignItems="center"
       justifyContent="space-between"
-      spacing={{ xs: 2, md: 2.5 }}
       sx={{
         p: { xs: 2, md: 2.5 },
-        gap: { md: 3 },
+        // Wrap by available width (the sidebar changes it), not by viewport breakpoint.
+        flexWrap: 'wrap',
+        gap: { xs: 2, md: 3 },
         borderBottom: (theme) => `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
         ...sx,
       }}
@@ -42,8 +43,11 @@ export function AdminTableToolbar({
           options={filterOptions}
           onChange={onFilterChange}
           getCount={getFilterCount}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
-            flex: 1,
+            flex: '999 1 480px',
             minWidth: 0,
             px: 0,
             py: 0,
@@ -51,6 +55,7 @@ export function AdminTableToolbar({
             boxShadow: 'none',
             '& .MuiTabs-flexContainer': {
               gap: { xs: 1, sm: 2 },
+              flexWrap: 'nowrap',
             },
             '& .MuiTab-root': {
               minHeight: 52,
@@ -66,10 +71,9 @@ export function AdminTableToolbar({
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder={searchPlaceholder}
         sx={{
-          width: { xs: 1, md: hasFilters ? 300 : 1 },
-          maxWidth: { md: hasFilters ? 340 : 'none' },
-          flexShrink: 0,
-          ml: { md: hasFilters ? 'auto' : 0 },
+          flex: hasFilters ? '1 1 260px' : '1 1 100%',
+          maxWidth: { xs: 'none', sm: hasFilters ? 340 : 'none' },
+          ml: hasFilters ? 'auto' : 0,
         }}
         InputProps={{
           startAdornment: (

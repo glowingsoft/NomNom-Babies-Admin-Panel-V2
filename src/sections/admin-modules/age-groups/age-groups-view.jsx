@@ -87,28 +87,10 @@ export function AgeGroupsView() {
 
   const totalRecords = response?.meta?.totalRecords ?? 0;
 
-  const { data: allCountResponse } = useGetBabyStagesQuery({
-    page: 1,
-    limit: 1,
-  });
-  const { data: activeCountResponse } = useGetBabyStagesQuery({
-    page: 1,
-    limit: 1,
-    status: 'active',
-  });
-  const { data: inactiveCountResponse } = useGetBabyStagesQuery({
-    page: 1,
-    limit: 1,
-    status: 'disabled',
-  });
 
-  const tabCounts = {
-    all: allCountResponse?.meta?.totalRecords ?? 0,
-    active: activeCountResponse?.meta?.totalRecords ?? 0,
-    disabled: inactiveCountResponse?.meta?.totalRecords ?? 0,
-  };
 
-  const getTabCount = useCallback((tab) => tabCounts[tab] ?? 0, [tabCounts]);
+  // Tab badges come from meta.counts (totals per status, independent of page/search/filter).
+  const getTabCount = useCallback((tab) => response?.meta?.counts?.[tab], [response?.meta?.counts]);
 
   const openAdd = useCallback(() => {
     setEditing(null);

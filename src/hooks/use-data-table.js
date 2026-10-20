@@ -255,8 +255,8 @@ export function useDataTable({
     );
 
     const totalRecords = useMemo(
-        () => responseData?.total_length || 0,
-        [responseData?.total_length]
+        () => responseData?.total_length ?? responseData?.meta?.totalRecords ?? 0,
+        [responseData?.total_length, responseData?.meta?.totalRecords]
     );
 
     const meta = useMemo(

@@ -9,121 +9,13 @@ export const dashboardApi = createApi({
   baseQuery: createCustomFetchBaseQuery(),
   tagTypes: ['Dashboard'],
   endpoints: (builder) => ({
-    // Dashboard Widgets
-    getDashboardWidgets: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.WIDGETS,
+    // All dashboard sections in one request. A section that failed on the server is null
+    // and listed in data.errors; the rest are still returned.
+    getDashboard: builder.query({
+      query: (params) => ({
+        url: API_ROUTES.DASHBOARD.ALL,
         method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // User Status Statistics
-    getUserStatusStats: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.USER_STATUS,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Platform Health
-    getPlatformHealth: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.PLATFORM_HEALTH,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Growth Trend
-    getGrowthTrend: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.GROWTH_TREND,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Country Growth
-    getCountryGrowth: builder.query({
-      query: (topN = 5) => ({
-        url: API_ROUTES.DASHBOARD.COUNTRY_GROWTH,
-        method: 'GET',
-        params: { topN },
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Recent Activities
-    getDashboardRecentActivities: builder.query({
-      query: (limit = 5) => ({
-        url: API_ROUTES.DASHBOARD.RECENT_ACTIVITIES,
-        method: 'GET',
-        params: { limit },
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Top Downloaded Recipes
-    getTopDownloadedRecipes: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.TOP_DOWNLOADED_RECIPES,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Top Recipes
-    getTopRecipes: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.TOP_RECIPES,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // Top Countries
-    getTopCountries: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.TOP_COUNTRIES,
-        method: 'GET',
-        headers: {
-          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
-        },
-      }),
-      providesTags: ['Dashboard'],
-    }),
-
-    // App Downloads (by device platform)
-    getAppDownloadStats: builder.query({
-      query: () => ({
-        url: API_ROUTES.DASHBOARD.APP_DOWNLOADS,
-        method: 'GET',
+        params,
         headers: {
           'x-admin-access-token': ADMIN_ACCESS_TOKEN,
         },
@@ -144,16 +36,4 @@ export const dashboardApi = createApi({
   }),
 });
 
-export const {
-  useGetDashboardWidgetsQuery,
-  useGetUserStatusStatsQuery,
-  useGetPlatformHealthQuery,
-  useGetGrowthTrendQuery,
-  useGetCountryGrowthQuery,
-  useGetDashboardRecentActivitiesQuery,
-  useGetTopDownloadedRecipesQuery,
-  useGetTopRecipesQuery,
-  useGetTopCountriesQuery,
-  useGetAppDownloadStatsQuery,
-  useGetDownloadedPdfsQuery,
-} = dashboardApi;
+export const { useGetDashboardQuery, useGetDownloadedPdfsQuery } = dashboardApi;

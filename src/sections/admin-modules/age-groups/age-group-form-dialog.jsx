@@ -14,7 +14,7 @@ const defaultForm = { title: '', features: '', active: true };
 
 // ----------------------------------------------------------------------
 
-export function AgeGroupFormDialog({ open, onClose, onSubmit, initialData, title }) {
+export function AgeGroupFormDialog({ open, onClose, onSubmit, initialData, title, submitting }) {
   const [form, setForm] = useState(defaultForm);
 
   useEffect(() => {
@@ -34,8 +34,6 @@ export function AgeGroupFormDialog({ open, onClose, onSubmit, initialData, title
         .filter(Boolean),
       active: form.active,
     });
-
-    onClose();
   };
 
   return (
@@ -72,7 +70,7 @@ export function AgeGroupFormDialog({ open, onClose, onSubmit, initialData, title
           />
         </Stack>
       </DialogContent>
-      <AdminDialogActions onCancel={onClose} onSubmit={handleSubmit} submitDisabled={!form.title.trim()} />
+      <AdminDialogActions onCancel={onClose} onSubmit={handleSubmit} submitDisabled={!form.title.trim()} loading={submitting} />
     </AdminFormDialog>
   );
 }
@@ -83,4 +81,5 @@ AgeGroupFormDialog.propTypes = {
   onSubmit: PropTypes.func,
   initialData: PropTypes.object,
   title: PropTypes.string,
+  submitting: PropTypes.bool,
 };
