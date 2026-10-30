@@ -16,7 +16,16 @@ import { mainRoutes } from './main';
 
 // ----------------------------------------------------------------------
 
-const HomePage = lazy(() => import('src/pages/home'));
+const named = (load, name) => lazy(() => load().then((m) => ({ default: m[name] })));
+
+const Landing = {
+  Home: named(() => import('src/sections/landing/landing-view'), 'LandingView'),
+  Legal: named(() => import('src/sections/landing/legal-view'), 'LegalView'),
+  Contact: named(() => import('src/sections/landing/contact-view'), 'ContactView'),
+  DeleteAccount: named(() => import('src/sections/landing/delete-account-view'), 'DeleteAccountView'),
+};
+
+const PublicPage = ({ children }) => <Suspense fallback={<SplashScreen />}>{children}</Suspense>;
 
 const Jwt = {
   SignInPage: lazy(() => import('src/pages/auth/jwt/sign-in')),
@@ -25,18 +34,18 @@ const Jwt = {
 
 export function Router() {
   return useRoutes([
+    // Public website (landing + pages linked from the app stores)
+    { path: '/', element: <PublicPage><Landing.Home /></PublicPage> },
+    { path: '/about', element: <PublicPage><Landing.Legal page="about" /></PublicPage> },
+    { path: '/privacy-policy', element: <PublicPage><Landing.Legal page="privacy" /></PublicPage> },
+    { path: '/terms', element: <PublicPage><Landing.Legal page="terms" /></PublicPage> },
+    { path: '/contact', element: <PublicPage><Landing.Contact /></PublicPage> },
+    { path: '/delete-account', element: <PublicPage><Landing.DeleteAccount /></PublicPage> },
+
+    // Admin sign-in — not linked from the public site.
     {
-      path: '/',
-      /**
-       * Skip home page
-       * element: <Navigate to={CONFIG.auth.redirectPath} replace />,
-       */
+      path: '/admin',
       element: (
-        // <Suspense fallback={<SplashScreen />}>
-        //   <MainLayout>
-        //     <HomePage />
-        //   </MainLayout>
-        // </Suspense>
         <GuestGuard>
           <AuthSplitLayout branding="nomnom">
             <Jwt.SignInPage />
