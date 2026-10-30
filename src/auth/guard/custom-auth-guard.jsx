@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
+import { paths } from 'src/routes/paths';
 
 const ProtectedRoute = ({ children, requiredPermission }) => {
 
@@ -21,3 +22,19 @@ const ProtectedRoute = ({ children, requiredPermission }) => {
 };
 
 export default ProtectedRoute;
+
+// Sends a logged-in user to their dashboard; renders children (e.g. landing) otherwise.
+export const RedirectIfLoggedIn = ({ children }) => {
+
+    const { user } = useSelector((state) => state.user);
+
+    if (user?.permission === 1) {
+        return <Navigate to={paths.adminDashboard.root} replace />;
+    }
+
+    if (user?.permission === 2) {
+        return <Navigate to={paths.dashboard.root} replace />;
+    }
+
+    return children;
+};

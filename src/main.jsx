@@ -4,11 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import App from './app';
 import { CONFIG } from './config-global';
 
-import { store } from './store/store';
+import { store, persistor } from './store/store';
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,10 @@ root.render(
       <BrowserRouter basename={CONFIG.site.basePath}>
         <Suspense>
           <Provider store={store}>
-            <App />
+            {/* Wait for the persisted user to load so guards don't redirect too early */}
+            <PersistGate loading={null} persistor={persistor}>
+              <App />
+            </PersistGate>
           </Provider>
         </Suspense>
       </BrowserRouter>

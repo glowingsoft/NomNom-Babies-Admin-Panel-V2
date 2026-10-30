@@ -31,6 +31,7 @@ export const createCustomFetchBaseQuery = () => {
         const isOnLoginPage =
           isBrowser &&
           (window.location.pathname === '/' ||
+            window.location.pathname === '/admin' ||
             window.location.pathname === '/auth/jwt/sign-in');
 
         if (!isOnLoginPage) {

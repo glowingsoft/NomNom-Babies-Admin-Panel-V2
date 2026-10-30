@@ -6,6 +6,7 @@ import { MainLayout } from 'src/layouts/main';
 import { SplashScreen } from 'src/components/loading-screen';
 
 import { GuestGuard } from 'src/auth/guard';
+import { RedirectIfLoggedIn } from 'src/auth/guard/custom-auth-guard';
 import { AuthSplitLayout } from 'src/layouts/auth-split';
 import { adminDashboardRoutes } from './admin-dashboard';
 import { authRoutes } from './auth';
@@ -35,7 +36,14 @@ const Jwt = {
 export function Router() {
   return useRoutes([
     // Public website (landing + pages linked from the app stores)
-    { path: '/', element: <PublicPage><Landing.Home /></PublicPage> },
+    {
+      path: '/',
+      element: (
+        <RedirectIfLoggedIn>
+          <PublicPage><Landing.Home /></PublicPage>
+        </RedirectIfLoggedIn>
+      ),
+    },
     { path: '/about', element: <PublicPage><Landing.Legal page="about" /></PublicPage> },
     { path: '/privacy-policy', element: <PublicPage><Landing.Legal page="privacy" /></PublicPage> },
     { path: '/terms', element: <PublicPage><Landing.Legal page="terms" /></PublicPage> },
@@ -46,11 +54,13 @@ export function Router() {
     {
       path: '/admin',
       element: (
-        <GuestGuard>
-          <AuthSplitLayout branding="nomnom">
-            <Jwt.SignInPage />
-          </AuthSplitLayout>
-        </GuestGuard>
+        <RedirectIfLoggedIn>
+          <GuestGuard>
+            <AuthSplitLayout branding="nomnom">
+              <Jwt.SignInPage />
+            </AuthSplitLayout>
+          </GuestGuard>
+        </RedirectIfLoggedIn>
       ),
     },
 
