@@ -8,6 +8,7 @@ import { NutritionTagsView } from 'src/sections/admin-modules/nutrition-tags/nut
 import { ContentApprovalView } from 'src/sections/admin-modules/content-approval/content-approval-view';
 import { ResourcesView } from 'src/sections/admin-modules/resources/resources-view';
 import { TranslationsView } from 'src/sections/admin-modules/translations/translations-view';
+import { AppTextsView } from 'src/sections/admin-modules/translations/app-texts-view';
 import { NotificationsView } from 'src/sections/admin-modules/views/notifications-view';
 import { SettingsView } from 'src/sections/admin-modules/views/settings-view';
 import { UsersView } from 'src/sections/admin-modules/users/users-view';
@@ -26,6 +27,7 @@ export const AdminNutritionTagsPage = createAdminPage('Nutrition tags', Nutritio
 export const AdminContentApprovalPage = createAdminPage('Content approval', ContentApprovalView);
 export const AdminResourcesPage = createAdminPage('Resources', ResourcesView);
 export const AdminTranslationsPage = createAdminPage('Languages', TranslationsView);
+export const AdminAppTextsPage = createAdminPage('App Texts', AppTextsView);
 export const AdminRecentActivitiesPage = createAdminPage('Recent Activities', RecentActivitiesView);
 export const AdminNotificationsPage = createAdminPage('Push notifications', NotificationsView);
 export const AdminSettingsPage = createAdminPage('Settings & configuration', SettingsView);

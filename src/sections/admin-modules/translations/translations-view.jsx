@@ -15,7 +15,8 @@ import { AdminTableActions } from '../components/admin-table-actions';
 import { AdminDeleteDialog } from '../components/admin-delete-dialog';
 import { useAdminListFilter } from '../utils/use-admin-list-filter';
 import { TranslationFormDialog } from './translation-form-dialog';
-import { AppTextsDialog } from './app-texts-dialog';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 import { TablePaginationCustom, useTable } from 'src/components/table';
 import { useCreateLanguageMutation, useGetLanguagesQuery, useUpdateLanguageMutation, useDeleteLanguageMutation } from 'src/store/Reducer/language';
 import { IconButton, LinearProgress, Tooltip } from '@mui/material';
@@ -49,7 +50,7 @@ export function TranslationsView() {
 
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
-  const [textsFor, setTextsFor] = useState(null);
+  const router = useRouter();
 
   const queryParams = useMemo(() => ({ page: table.page + 1, limit: table.rowsPerPage }), [table.page, table.rowsPerPage]);
 
@@ -194,8 +195,8 @@ export function TranslationsView() {
 
               <AdminTableActions
                 extra={
-                  <Tooltip title="Edit app texts">
-                    <IconButton size="small" color="info" onClick={() => setTextsFor(row)}>
+                  <Tooltip title="Edit app texts (all languages)">
+                    <IconButton size="small" color="info" onClick={() => router.push(paths.adminDashboard.modules.appTexts)}>
                       <Iconify icon="solar:text-field-bold" />
                     </IconButton>
                   </Tooltip>
@@ -232,8 +233,6 @@ export function TranslationsView() {
         title={editing ? 'Edit Language' : 'Add Language'}
         loading={isCreating || isUpdating}
       />
-
-      <AppTextsDialog language={textsFor} onClose={() => setTextsFor(null)} />
 
       <AdminDeleteDialog
         open={confirmDelete.value}

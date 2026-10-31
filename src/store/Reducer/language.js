@@ -60,6 +60,27 @@ export const languageApi = createApi({
       invalidatesTags: ['Languages'],
     }),
 
+    // Central editor: every key with one column per language
+    getAllTranslations: builder.query({
+      query: () => ({
+        url: `${API_ROUTES.LANGUAGES.ALL_LANGUAGES}/translations`,
+        method: 'GET',
+        headers: { 'x-admin-access-token': ADMIN_ACCESS_TOKEN },
+      }),
+      providesTags: ['Translations'],
+    }),
+
+    // Save edited/added rows and deleted keys for all languages at once
+    saveAllTranslations: builder.mutation({
+      query: (body) => ({
+        url: `${API_ROUTES.LANGUAGES.ALL_LANGUAGES}/translations`,
+        method: 'PUT',
+        body,
+        headers: { 'x-admin-access-token': ADMIN_ACCESS_TOKEN },
+      }),
+      invalidatesTags: ['Languages', 'Translations'],
+    }),
+
     // App texts of one language next to the English source texts
     getLanguageTranslations: builder.query({
       query: (id) => ({
@@ -94,4 +115,6 @@ export const {
   useDeleteLanguageMutation,
   useGetLanguageTranslationsQuery,
   useUpdateLanguageTranslationsMutation,
+  useGetAllTranslationsQuery,
+  useSaveAllTranslationsMutation,
 } = languageApi;

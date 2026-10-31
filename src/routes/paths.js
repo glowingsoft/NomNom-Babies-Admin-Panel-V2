@@ -229,6 +229,7 @@ export const paths = {
       contentApproval: `${ROOTS.ADMIN_DASHBOARD}/content-approval`,
       resources: `${ROOTS.ADMIN_DASHBOARD}/resources`,
       translations: `${ROOTS.ADMIN_DASHBOARD}/translations`,
+      appTexts: `${ROOTS.ADMIN_DASHBOARD}/app-texts`,
       notifications: `${ROOTS.ADMIN_DASHBOARD}/notifications`,
       settings: `${ROOTS.ADMIN_DASHBOARD}/settings`,
       transactions: `${ROOTS.ADMIN_DASHBOARD}/transactions`,

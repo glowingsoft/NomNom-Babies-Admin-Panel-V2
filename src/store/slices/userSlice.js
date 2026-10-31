@@ -11,6 +11,11 @@ const userSlice = createSlice({
       state.user = user;
     },
 
+    // Fresh access token from a silent refresh (the rest of the user is unchanged).
+    setToken: (state, action) => {
+      if (state.user) state.user.token = action.payload;
+    },
+
     logout: (state) => {
       console.log('userSlice - Logging out');
       state.user = null;
@@ -19,7 +24,7 @@ const userSlice = createSlice({
 });
 
 // Exporting actions
-export const { setUser, logout } = userSlice.actions;
+export const { setUser, setToken, logout } = userSlice.actions;
 export const selectUser = (state) => state.user.user;
 
 // Exporting the reducer

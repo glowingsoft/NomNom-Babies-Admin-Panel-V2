@@ -57,6 +57,11 @@ export const navDataAdmin = [
             icon: ICONS.blog,
           },
           {
+            title: 'App Texts',
+            path: paths.adminDashboard.modules.appTexts,
+            icon: ICONS.label,
+          },
+          {
             title: 'Recent Activites',
             path: paths.adminDashboard.modules.activities,
             icon: ICONS.recent,

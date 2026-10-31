@@ -60,6 +60,7 @@ const AdminNutritionTagsPage = lazy(() => import('src/pages/dashboard/admin').th
 const AdminContentApprovalPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminContentApprovalPage })));
 const AdminResourcesPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminResourcesPage })));
 const AdminTranslationsPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminTranslationsPage })));
+const AdminAppTextsPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminAppTextsPage })));
 const AdminRecentActivitiesPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminRecentActivitiesPage })));
 const AdminNotificationsPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminNotificationsPage })));
 const AdminSettingsPage = lazy(() => import('src/pages/dashboard/admin').then((m) => ({ default: m.AdminSettingsPage })));
@@ -123,6 +124,7 @@ export const adminDashboardRoutes = [
       { path: 'content-approval', element: <AdminContentApprovalPage /> },
       { path: 'resources', element: <AdminResourcesPage /> },
       { path: 'translations', element: <AdminTranslationsPage /> },
+      { path: 'app-texts', element: <AdminAppTextsPage /> },
       { path: 'activities', element: <AdminRecentActivitiesPage /> },
       { path: 'notifications', element: <AdminNotificationsPage /> },
       { path: 'settings', element: <AdminSettingsPage /> },

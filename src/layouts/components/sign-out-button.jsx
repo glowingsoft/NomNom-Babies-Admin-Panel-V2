@@ -18,7 +18,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import { logout } from 'src/store/slices/userSlice';
 import { walletsApi } from 'src/store/Reducer/wallets-api';
 import { categoriesApi } from 'src/store/Reducer/categories-api';
-import { authApi } from 'src/store/Reducer/auth';
+import { authApi, useAdminLogoutMutation } from 'src/store/Reducer/auth';
 
 const signOut =
   (CONFIG.auth.method === 'supabase' && supabaseSignOut) ||
@@ -34,8 +34,14 @@ export function SignOutButton({ onClose, variant = 'soft', color = 'error', size
   const { checkUserSession } = useAuthContext();
   const { logout: signOutAuth0 } = useAuth0();
 
+  const [adminLogout] = useAdminLogoutMutation();
+
   const handleLogout = useCallback(async () => {
     try {
+      // Ends the session on the server (revokes the refresh cookie) before clearing local state.
+      await adminLogout({ deviceId: '123' })
+        .unwrap()
+        .catch(() => undefined);
       dispatch(walletsApi.util.resetApiState());
       dispatch(categoriesApi.util.resetApiState());
       dispatch(authApi.util.resetApiState());
@@ -53,7 +59,7 @@ export function SignOutButton({ onClose, variant = 'soft', color = 'error', size
       console.error('Logout error:', error);
       toast.error('Unable to logout!');
     }
-  }, [dispatch, onClose, router]);
+  }, [adminLogout, dispatch, onClose, router]);
 
   const handleLogoutAuth0 = useCallback(async () => {
     try {
