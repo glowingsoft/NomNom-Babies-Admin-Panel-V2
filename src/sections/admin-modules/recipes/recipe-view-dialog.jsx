@@ -151,7 +151,10 @@ export function RecipeViewDialog({ open, onClose, data, loading }) {
                     {method.map((step, index) => (
                       <Stack key={step._id ?? index} direction="row" spacing={1.5} sx={{ px: 2, py: 1.25 }}>
                         <Avatar sx={{ width: 24, height: 24, fontSize: 13, bgcolor: 'primary.main', color: 'common.white', mt: 0.25 }}>{step.step ?? index + 1}</Avatar>
-                        <Typography variant="body2">{step.instruction}</Typography>
+                        <Box>
+                          {step.title ? <Typography variant="subtitle2">{step.title}</Typography> : null}
+                          <Typography variant="body2">{step.instruction}</Typography>
+                        </Box>
                       </Stack>
                     ))}
                   </Stack>

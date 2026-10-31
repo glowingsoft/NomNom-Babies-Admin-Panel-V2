@@ -36,7 +36,7 @@ const STATUS_OPTIONS = [
 ];
 
 const emptyIngredient = { name: '', icon: '', category: '', quantity: '' };
-const emptyMethodStep = { instruction: '' };
+const emptyMethodStep = { title: '', instruction: '' };
 
 const defaultForm = {
   title: '',
@@ -115,7 +115,7 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
               ingredients: initialData.ingredients?.length
                 ? initialData.ingredients.map((i) => ({ name: i.name ?? '', icon: i.icon ?? '', category: i.category ?? '', quantity: i.quantity ?? '' }))
                 : [emptyIngredient],
-              method: initialData.method?.length ? [...initialData.method].sort((a, b) => a.step - b.step).map((m) => ({ instruction: m.instruction ?? '' })) : [emptyMethodStep],
+              method: initialData.method?.length ? [...initialData.method].sort((a, b) => a.step - b.step).map((m) => ({ title: m.title ?? '', instruction: m.instruction ?? '' })) : [emptyMethodStep],
               notes: initialData.notes ?? '',
               acceptanceLabel: initialData.acceptanceLabel ?? '',
               status: initialData.status ?? 'draft',
@@ -163,10 +163,10 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
     setForm((f) => ({ ...f, ingredients: f.ingredients.filter((_, i) => i !== index) }));
   };
 
-  const updateMethodStep = (index, value) => {
+  const updateMethodStep = (index, field, value) => {
     setForm((f) => ({
       ...f,
-      method: f.method.map((step, i) => (i === index ? { instruction: value } : step)),
+      method: f.method.map((step, i) => (i === index ? { ...step, [field]: value } : step)),
     }));
   };
 
@@ -185,7 +185,7 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
       .filter((i) => i.name.trim())
       .map((i) => ({ name: i.name.trim(), icon: i.icon.trim(), category: i.category.trim(), quantity: i.quantity.trim() }));
 
-    const cleanedMethod = form.method.filter((m) => m.instruction.trim()).map((m, index) => ({ step: index + 1, instruction: m.instruction.trim() }));
+    const cleanedMethod = form.method.filter((m) => m.instruction.trim()).map((m, index) => ({ step: index + 1, title: m.title.trim(), instruction: m.instruction.trim() }));
 
     onSubmit({
       title: form.title.trim(),
@@ -325,7 +325,10 @@ export function RecipeFormDialog({ open, onClose, onSubmit, initialData, loading
               {form.method.map((step, index) => (
                 <Stack key={index} direction="row" spacing={1.5} alignItems="flex-start">
                   <Typography sx={{ pt: 1.5, minWidth: 24, color: 'text.secondary' }}>{index + 1}.</Typography>
-                  <TextField placeholder="Describe this step" value={step.instruction} onChange={(e) => updateMethodStep(index, e.target.value)} multiline fullWidth />
+                  <Stack spacing={1} sx={{ flex: 1 }}>
+                    <TextField size="small" placeholder="Step title (e.g. Steam the apple)" value={step.title} onChange={(e) => updateMethodStep(index, 'title', e.target.value)} inputProps={{ maxLength: 80 }} fullWidth />
+                    <TextField placeholder="Describe this step" value={step.instruction} onChange={(e) => updateMethodStep(index, 'instruction', e.target.value)} multiline fullWidth />
+                  </Stack>
                   <IconButton color="error" onClick={() => removeMethodStep(index)} disabled={form.method.length === 1}>
                     <Iconify icon="solar:trash-bin-trash-bold" width={20} />
                   </IconButton>

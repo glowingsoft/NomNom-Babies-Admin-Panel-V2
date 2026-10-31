@@ -10,7 +10,6 @@ import { NOMNOM_LOGO } from 'src/assets/logo';
 import { isNomnomBrandedRoute } from 'src/utils/is-nomnom-branded-route';
 
 import { logoClasses } from './classes';
-import { CONFIG } from 'src/config-global';
 
 
 const ADMIN_LOGO_WIDTH = 100;
@@ -26,25 +25,18 @@ export const Logo = forwardRef(({ width, height, disableLink = false, className,
 
   const linkHref =
     href ?? (isAdminDashboard ? paths.adminDashboard.root : '/');
-  const isAuthPage =
-    pathname === '/' ||
-    pathname.startsWith('/auth/sign-in') ||
-    pathname.startsWith('/auth/forget-password') ||
-    pathname.startsWith('/auth/reset-password') ||
-    pathname.startsWith('/auth/verify-password');
+  const isAuthPage = pathname === '/' || pathname === '/admin' || pathname.startsWith('/auth/');
 
   const logoWidth =
     width ?? (isAuthPage ? AUTH_LOGO_WIDTH : isNomnomBrand ? ADMIN_LOGO_WIDTH : 100);
   const logoHeight =
     height ?? (isAuthPage ? AUTH_LOGO_HEIGHT : isNomnomBrand ? ADMIN_LOGO_HEIGHT : 70);
 
-  const logoSrc = isNomnomBrand ? NOMNOM_LOGO : `${CONFIG.site.basePath}/logo/logo-single.svg`;
-
   const logo = (
     <Box
       alt="NomNom Babies"
       component="img"
-      src={logoSrc}
+      src={NOMNOM_LOGO}
       sx={{
         width: logoWidth,
         height: logoHeight,

@@ -15,9 +15,11 @@ import { AdminTableActions } from '../components/admin-table-actions';
 import { AdminDeleteDialog } from '../components/admin-delete-dialog';
 import { useAdminListFilter } from '../utils/use-admin-list-filter';
 import { TranslationFormDialog } from './translation-form-dialog';
+import { AppTextsDialog } from './app-texts-dialog';
 import { TablePaginationCustom, useTable } from 'src/components/table';
 import { useCreateLanguageMutation, useGetLanguagesQuery, useUpdateLanguageMutation, useDeleteLanguageMutation } from 'src/store/Reducer/language';
-import { LinearProgress } from '@mui/material';
+import { IconButton, LinearProgress, Tooltip } from '@mui/material';
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -27,8 +29,9 @@ const TABLE_HEAD = [
   { id: 'transliteration', label: 'Transliteration' },
   { id: 'code', label: 'Code' },
   { id: 'flag', label: 'Flag', width: 120 },
+  { id: 'texts', label: 'App texts', width: 160 },
   { id: 'active', label: 'Status', width: 120 },
-  { id: 'actions', label: 'Actions', width: 72, align: 'center' },
+  { id: 'actions', label: 'Actions', width: 120, align: 'center' },
 ];
 
 const FILTER_TABS = [
@@ -46,6 +49,7 @@ export function TranslationsView() {
 
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [textsFor, setTextsFor] = useState(null);
 
   const queryParams = useMemo(() => ({ page: table.page + 1, limit: table.rowsPerPage }), [table.page, table.rowsPerPage]);
 
@@ -177,12 +181,25 @@ export function TranslationsView() {
               <TableCell>{row.flag}</TableCell>
 
               <TableCell>
+                <Label variant="soft" color={row.missingTranslations ? 'warning' : 'success'}>
+                  {row.missingTranslations ? `${row.missingTranslations} missing` : `${row.totalTranslations ?? 0} translated`}
+                </Label>
+              </TableCell>
+
+              <TableCell>
                 <Label variant="soft" color={row.active ? 'success' : 'error'}>
                   {row.active ? 'Active' : 'Disabled'}
                 </Label>
               </TableCell>
 
               <AdminTableActions
+                extra={
+                  <Tooltip title="Edit app texts">
+                    <IconButton size="small" color="info" onClick={() => setTextsFor(row)}>
+                      <Iconify icon="solar:text-field-bold" />
+                    </IconButton>
+                  </Tooltip>
+                }
                 onEdit={() => openEdit(row)}
                 onDelete={() => {
                   setDeleting(row);
@@ -215,6 +232,8 @@ export function TranslationsView() {
         title={editing ? 'Edit Language' : 'Add Language'}
         loading={isCreating || isUpdating}
       />
+
+      <AppTextsDialog language={textsFor} onClose={() => setTextsFor(null)} />
 
       <AdminDeleteDialog
         open={confirmDelete.value}

@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
 import { AdminDialogActions, AdminFormDialog } from '../components/admin-form-dialog';
-import { FormControlLabel, Switch } from '@mui/material';
+import { FormControlLabel, Switch, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -66,6 +66,10 @@ export function TranslationFormDialog({ open, onClose, onSubmit, initialData, ti
           <TextField label="Code" placeholder="🇵🇰, 🇺🇸,...." value={form.code} onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))} multiline rows={2} fullWidth />
           <TextField label="Flag" placeholder="ur, us, en...." value={form.flag} onChange={(e) => setForm((f) => ({ ...f, flag: e.target.value }))} multiline rows={2} fullWidth />
           <FormControlLabel label="Active" control={<Switch checked={form.active} onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))} />} />
+          <Typography variant="caption" color="text.secondary">
+            A language can be active only when all of its app texts are translated (App texts button in the list). New languages start
+            disabled.
+          </Typography>
         </Stack>
       </DialogContent>
       <AdminDialogActions onCancel={onClose} onSubmit={handleSubmit} submitDisabled={!form.title.trim() || !form.transliteration.trim() || !form.code.trim()} loading={loading} />

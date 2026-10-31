@@ -7,7 +7,7 @@ const ADMIN_ACCESS_TOKEN = import.meta.env.VITE_ADMIN_ACCESS_TOKEN;
 export const languageApi = createApi({
   reducerPath: 'language',
   baseQuery: createCustomFetchBaseQuery(),
-  tagTypes: ['Languages'],
+  tagTypes: ['Languages', 'Translations'],
   endpoints: (builder) => ({
     // Get All Languages
     getLanguages: builder.query({
@@ -59,7 +59,39 @@ export const languageApi = createApi({
       }),
       invalidatesTags: ['Languages'],
     }),
+
+    // App texts of one language next to the English source texts
+    getLanguageTranslations: builder.query({
+      query: (id) => ({
+        url: `${API_ROUTES.LANGUAGES.UPDATE_LANGUAGE(id)}/translations`,
+        method: 'GET',
+        headers: {
+          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
+        },
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'Translations', id }],
+    }),
+
+    // Save App texts (bumps the version the app checks)
+    updateLanguageTranslations: builder.mutation({
+      query: ({ id, translations }) => ({
+        url: `${API_ROUTES.LANGUAGES.UPDATE_LANGUAGE(id)}/translations`,
+        method: 'PUT',
+        body: { translations },
+        headers: {
+          'x-admin-access-token': ADMIN_ACCESS_TOKEN,
+        },
+      }),
+      invalidatesTags: (_result, _error, { id }) => ['Languages', { type: 'Translations', id }],
+    }),
   }),
 });
 
-export const { useGetLanguagesQuery, useCreateLanguageMutation, useUpdateLanguageMutation, useDeleteLanguageMutation } = languageApi;
+export const {
+  useGetLanguagesQuery,
+  useCreateLanguageMutation,
+  useUpdateLanguageMutation,
+  useDeleteLanguageMutation,
+  useGetLanguageTranslationsQuery,
+  useUpdateLanguageTranslationsMutation,
+} = languageApi;
